@@ -14,7 +14,7 @@ public class Ingresso {
     @GeneratedValue
     private long id;
     private String tipo;
-    private BigDecimal valor;
-    private int quantidade;
+    private BigDecimal valorBase;
+    private int quantidadeDisponivel;
     private boolean temMeiaEntrada;
 }
