@@ -8,10 +8,8 @@ import com.oxentepass.oxentepass.exceptions.SubeventoInvalidoException;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
-import lombok.Data;
 
 @Entity
-@Data
 public class EventoComposto extends Evento {
     
     // Talvez não seja necessário cascade
@@ -34,5 +32,14 @@ public class EventoComposto extends Evento {
     public void removerEvento(EventoSimples evento) {
         if (!this.subeventos.remove(evento))
             throw new SubeventoInvalidoException("O sub-evento especificado não faz parte do evento.");
+    }
+
+    // Getters e Setters (feito manualmente por causa de algum bug do lombok)
+    public List<EventoSimples> getSubeventos() {
+        return this.subeventos;
+    }
+
+    public void setSubeventos(List<EventoSimples> subeventos) {
+        this.subeventos = subeventos;
     }
 }
