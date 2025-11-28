@@ -14,20 +14,20 @@ public interface EventoService {
     public void criarEvento(Evento evento);
     public Page<Evento> listarEventos(Pageable pageable);
     public Page<Evento> listarEventosFiltro (Predicate predicate, Pageable pageable);
-    public void editarEvento(Long id, Evento evento); //Talvez faça sentido separar algumas partes da edição (endereço, por exemplo)
-    public void deletarEvento(long id);
+    public void editarEvento(Long idEvento, Evento evento); //Talvez faça sentido separar algumas partes da edição (endereço, por exemplo)
+    public void deletarEvento(long idEvento);
     // Tags
     public void adicionarTag(long idEvento, long idTag); // Adição de Tag existente
     public void adicionarTag(long idEvento, Tag tag);    // Criação de nova Tag
     public void removerTag(long idEvento, long idTag);
     // Ingressos
-    public void adicionarIngresso(long id, Ingresso Ingresso);
-    public void removerIngresso(long id, Ingresso Ingresso);
+    public void adicionarIngresso(long idEvento, Ingresso Ingresso);
+    public void removerIngresso(long idEvento, Ingresso Ingresso);
     // Pontos de venda
-    public void adicionarPontoVenda(long id, long idPontoVenda);    // Adição de PontoVenda existente
-    public void adicionarPontoVenda(long id, PontoVenda pontoVenda);// Criação de novo PontoVenda 
-    public void removerPontoVenda(long id, PontoVenda pontoVenda);
+    public void adicionarPontoVenda(long idEvento, long idPontoVenda);    // Adição de PontoVenda existente
+    public void adicionarPontoVenda(long idEvento, PontoVenda pontoVenda);// Criação de novo PontoVenda 
+    public void removerPontoVenda(long idEvento, PontoVenda pontoVenda);
     // Avaliações
-    public void adicionarAvaliacao(long id, Avaliacao avaliacao);
-    public void removerAvaliacao(long id, Avaliacao avaliacao);
+    public void adicionarAvaliacao(long idEvento, Avaliacao avaliacao);
+    public void removerAvaliacao(long idEvento, Avaliacao avaliacao);
 }
