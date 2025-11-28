@@ -21,13 +21,13 @@ public interface EventoService {
     public void adicionarTag(long idEvento, Tag tag);    // Criação de nova Tag
     public void removerTag(long idEvento, long idTag);
     // Ingressos
-    public void adicionarIngresso(long idEvento, Ingresso Ingresso);
-    public void removerIngresso(long idEvento, Ingresso Ingresso);
+    public void adicionarIngresso(long idEvento, Ingresso ingresso);
+    public void removerIngresso(long idEvento, long idIngresso);
     // Pontos de venda
     public void adicionarPontoVenda(long idEvento, long idPontoVenda);    // Adição de PontoVenda existente
     public void adicionarPontoVenda(long idEvento, PontoVenda pontoVenda);// Criação de novo PontoVenda 
-    public void removerPontoVenda(long idEvento, PontoVenda pontoVenda);
+    public void removerPontoVenda(long idEvento, long idPontoVenda);
     // Avaliações
     public void adicionarAvaliacao(long idEvento, Avaliacao avaliacao);
-    public void removerAvaliacao(long idEvento, Avaliacao avaliacao);
+    public void removerAvaliacao(long idEvento, long idAvaliacao);
 }
