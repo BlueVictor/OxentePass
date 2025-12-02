@@ -65,9 +65,21 @@ public class EventoServiceImpl implements EventoService {
     }
 
     @Override
-    public void editarEvento(Long idEvento, Evento evento) { //Definir quais atributos serão modificados
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'editarEvento'");
+    public void editarEvento(Long idEvento, Evento evento) {
+        Evento eventoEdicao = buscarEventoId(idEvento);
+
+        // Atributos modificados pela "edição padrão"
+        eventoEdicao.setNome(evento.getNome());                         // Nome
+        eventoEdicao.setDescricao(evento.getDescricao());               // Descricao
+        eventoEdicao.setOrganizador(evento.getOrganizador());           // Organizador
+        eventoEdicao.setDataHoraInicio(evento.getDataHoraInicio());     // DataHoraInicio
+        eventoEdicao.setDataHoraFim(evento.getDataHoraFim());           // DataHoraFim
+        eventoEdicao.setClassificacao(evento.getClassificacao());       // Classificacao
+        eventoEdicao.setEmailContato(evento.getEmailContato());         // EmailContato
+        eventoEdicao.setTelefoneContato(evento.getTelefoneContato());   // TelefoneContato
+        eventoEdicao.setEndereco(evento.getEndereco());                 // Endereco
+
+        eventoRepository.save(eventoEdicao);
     }
 
     @Override
@@ -150,19 +162,29 @@ public class EventoServiceImpl implements EventoService {
 
     @Override
     public void removerPontoVenda(long idEvento, long idPontoVenda) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'removerPontoVenda'");
+        Evento evento = buscarEventoId(idEvento);
+
+        Optional<PontoVenda> pontoVendaBusca = pontoVendaRepository.findById(idPontoVenda);
+        if (pontoVendaBusca.isEmpty())
+            throw new PontoVendaInvalidoException("O ponto de venda informado não está vinculado ao evento " + evento.getNome() + ".");
+
+        PontoVenda pontoVenda = pontoVendaBusca.get();
+
+        evento.removerPontoVenda(pontoVenda);
+        eventoRepository.save(evento);
     }
 
     @Override
     public void adicionarAvaliacao(long idEvento, Avaliacao avaliacao) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'adicionarAvaliacao'");
+        Evento evento = buscarEventoId(idEvento);
+
+        evento.addAvaliacao(avaliacao);
     }
 
     @Override
     public void removerAvaliacao(long idEvento, long idAvaliacao) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'removerAvaliacao'");
+        Evento evento = buscarEventoId(idEvento);
+
+        evento.removerAvaliacao(idAvaliacao);
     }
 }
