@@ -4,7 +4,10 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.NativeQuery;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
 import org.springframework.data.querydsl.binding.QuerydslBindings;
@@ -20,7 +23,12 @@ import com.querydsl.core.types.dsl.StringPath;
 public interface EventoRepository extends JpaRepository<Evento, Long>, 
                                           QuerydslPredicateExecutor<Evento>,
                                           QuerydslBinderCustomizer<QEvento> {
-
+    
+    @NativeQuery("SELECT e.* FROM evento e " +
+                 "JOIN evento_subevento es ON s.id = es.subevento_id " + 
+                 "WHERE es.evento_id = :id")
+    Page<Evento> findSubeventosByParentId(long id, Pageable pageable);
+                                            
     @Override
     default void customize(QuerydslBindings bindings, QEvento root) {
         // Bind para ID
