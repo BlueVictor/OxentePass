@@ -3,14 +3,19 @@ package com.oxentepass.oxentepass.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.oxentepass.oxentepass.controller.DTOs.CriarTagDTO;
 import com.oxentepass.oxentepass.entity.Tag;
 import com.oxentepass.oxentepass.service.TagService;
 import com.querydsl.core.types.Predicate;
+
+import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,29 +28,27 @@ public class TagController {
 
     @Autowired
     private TagService tagService;
-    
-    //FALTA ADICIONAR OS DTOs
 
     @PostMapping
-    public String criarTag(@RequestBody Tag tag) { 
-        tagService.criarTag(tag);        
-        return "Tag criada";
+    public ResponseEntity<String> criarTag(@RequestBody @Valid CriarTagDTO dto) { 
+        tagService.criarTag(dto.paraEntidade());        
+        return new ResponseEntity<String>("Tag criada com sucesso", HttpStatus.CREATED);
     }
 
     @GetMapping
-    public Page<Tag> listarTodasTags (Pageable pageable) {
-        return tagService.listarTags(pageable);
+    public ResponseEntity<Page<Tag>> listarTodasTags (Pageable pageable) {
+        return new ResponseEntity<Page<Tag>>(tagService.listarTags(pageable), HttpStatus.OK);
     }
 
     @GetMapping("/filtro")
-    public Page<Tag> listarTagFiltro (@QuerydslPredicate(root = Tag.class) Predicate predicate, Pageable pageable) {
-        return tagService.listarTagsFiltro(predicate, pageable);
+    public ResponseEntity<Page<Tag>> listarTagFiltro (@QuerydslPredicate(root = Tag.class) Predicate predicate, Pageable pageable) {
+        return new ResponseEntity<Page<Tag>>(tagService.listarTagsFiltro(predicate, pageable), HttpStatus.OK);
     }
     
     @DeleteMapping("/{id}")
-    public String deletarTag (@PathVariable long id) {
+    public ResponseEntity<String> deletarTag (@PathVariable long id) {
         tagService.deletarTag(id);
-        return "Tag deletada";
+        return new ResponseEntity<String>("Tag deletada com sucesso", HttpStatus.OK);
     }
 
 }
