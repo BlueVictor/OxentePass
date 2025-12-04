@@ -3,7 +3,7 @@ package com.oxentepass.oxentepass.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.oxentepass.oxentepass.controller.DTOs.EventoRequest;
+import com.oxentepass.oxentepass.controller.request.EventoRequest;
 import com.oxentepass.oxentepass.entity.Evento;
 import com.oxentepass.oxentepass.service.EventoService;
 import com.querydsl.core.types.Predicate;

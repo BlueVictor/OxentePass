@@ -3,7 +3,7 @@ package com.oxentepass.oxentepass.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.oxentepass.oxentepass.controller.DTOs.TagRequest;
+import com.oxentepass.oxentepass.controller.request.TagRequest;
 import com.oxentepass.oxentepass.entity.Tag;
 import com.oxentepass.oxentepass.service.TagService;
 import com.querydsl.core.types.Predicate;
