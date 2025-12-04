@@ -1,13 +1,16 @@
 package com.oxentepass.oxentepass.service.implementation;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.oxentepass.oxentepass.controller.response.EventoResponse;
 import com.oxentepass.oxentepass.entity.Avaliacao;
 import com.oxentepass.oxentepass.entity.Evento;
 import com.oxentepass.oxentepass.entity.EventoComposto;
@@ -50,6 +53,19 @@ public class EventoServiceImpl implements EventoService {
         return eventoBusca.get();
     }
 
+    private Page<EventoResponse> paraDTOPage(Page<Evento> eventos) {
+        List<EventoResponse> dtos = eventos.getContent()
+            .stream()
+            .map(EventoResponse::paraDTO)
+            .toList();
+
+        return new PageImpl<>(
+            dtos, 
+            eventos.getPageable(), 
+            eventos.getTotalElements()
+        );
+    }
+
     //Métodos da Interface
 
     // Operações Básicas
@@ -59,13 +75,17 @@ public class EventoServiceImpl implements EventoService {
     }
 
     @Override
-    public Page<Evento> listarEventos(Pageable pageable) {
-        return eventoRepository.findAll(pageable);
+    public Page<EventoResponse> listarEventos(Pageable pageable) {
+        return this.paraDTOPage(
+            eventoRepository.findAll(pageable)
+        );
     }
 
     @Override
-    public Page<Evento> listarEventosFiltro(Predicate predicate, Pageable pageable) {
-        return eventoRepository.findAll(predicate, pageable);
+    public Page<EventoResponse> listarEventosFiltro(Predicate predicate, Pageable pageable) {
+        return this.paraDTOPage(
+            eventoRepository.findAll(predicate, pageable)
+        );
     }
 
     @Override
@@ -223,13 +243,15 @@ public class EventoServiceImpl implements EventoService {
     }
 
     @Override
-    public Page<Evento> listarSubeventos(long idEvento, Pageable pageable) {
+    public Page<EventoResponse> listarSubeventos(long idEvento, Pageable pageable) {
         Evento evento = buscarEventoId(idEvento);
 
         if (!(evento instanceof EventoComposto)) 
             throw new EventoInvalidoException("O evento com id " + idEvento + " não suporta sub-eventos.");
     
-        return eventoRepository.findSubeventosByParentId(idEvento, pageable); //Testar
+        return this.paraDTOPage(
+            eventoRepository.findSubeventosByParentId(idEvento, pageable)
+        ); //Testar
     }
 
     @Override
