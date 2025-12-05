@@ -174,4 +174,43 @@ public class EventoController {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'removerAvaliacao'");
     }
+
+    //Sub-Eventos
+    @PatchMapping("/{idEvento}/addSubeventoSimples")
+    public ResponseEntity<String> criarSubEventoSimples (@PathVariable long idEvento, @RequestBody @Valid EventoRequest dto) {
+        eventoService.criarSubevento(idEvento, dto.paraEntidade(true));
+        
+        return new ResponseEntity<String>(
+            "Sub-evento simples " + dto.nome() + " criado com sucesso!", 
+            HttpStatus.CREATED
+        );
+    }
+
+    @PatchMapping("/{idEvento}/addSubeventoComposto")
+    public ResponseEntity<String> criarSubEventoComposto (@PathVariable long idEvento, @RequestBody @Valid EventoRequest dto) {
+        eventoService.criarSubevento(idEvento, dto.paraEntidade(false));
+        
+        return new ResponseEntity<String>(
+            "Sub-evento composto " + dto.nome() + " criado com sucesso!", 
+            HttpStatus.CREATED
+        );
+    }
+
+    @GetMapping("/{idEvento}/subeventos")
+    public ResponseEntity<Page<EventoResponse>> listarSubeventos (@PathVariable long idEvento, Pageable pageable) {
+        return new ResponseEntity<Page<EventoResponse>>(
+            eventoService.listarSubeventos(idEvento, pageable), 
+            HttpStatus.OK
+        );
+    }
+   
+    @PatchMapping("/{idEvento}/removerSubevento/{idSubevento}")
+    public ResponseEntity<String> removerSubEvento (@PathVariable long idEvento, @PathVariable long idSubevento) {
+        eventoService.removerSubevento(idEvento, idSubevento);
+        
+        return new ResponseEntity<String>(
+            "Sub-evento com id " + idSubevento + " removido com sucesso!", 
+            HttpStatus.OK
+        );
+    }
 }
