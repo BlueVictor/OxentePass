@@ -134,4 +134,31 @@ public class EventoController {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'removerIngresso'");
     }
+
+    //Pontos de venda
+    @PatchMapping("/{idEvento}/addPontoVenda/{idPontoVenda}")
+    public ResponseEntity<String> adicionarPontoVendaExistente (@PathVariable long idEvento, @PathVariable long idPontoVenda) {
+        eventoService.adicionarPontoVendaExistente(idEvento, idPontoVenda);
+
+        return new ResponseEntity<String>(
+            "Ponto de venda com id " + idPontoVenda + " adicionado ao evento com id " + idEvento + " com sucesso!", 
+            HttpStatus.OK
+        );
+    }
+
+    @PatchMapping("/{idEvento}/addPontoVenda") //Adicionar DTO de entrada
+    public ResponseEntity<String> adicionarPontoVendaNovo (@PathVariable long idEvento) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'adicionarPontoVendaNovo'");
+    }
+
+    @PatchMapping("/{idEvento}/removerPontoVenda/{idPontoVenda}")
+    public ResponseEntity<String> removerPontoVenda (@PathVariable long idEvento, @PathVariable long idPontoVenda) {
+        eventoService.removerPontoVenda(idEvento, idPontoVenda);
+
+        return new ResponseEntity<String>(
+            "Ponto de venda com id " + idPontoVenda + " removido do evento com id " + idEvento + " com sucesso!", 
+            HttpStatus.OK
+        );
+    }
 }
