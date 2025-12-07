@@ -7,10 +7,11 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.NativeQuery;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
 import org.springframework.data.querydsl.binding.QuerydslBindings;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.oxentepass.oxentepass.entity.Evento;
@@ -23,11 +24,15 @@ import com.querydsl.core.types.dsl.StringPath;
 public interface EventoRepository extends JpaRepository<Evento, Long>, 
                                           QuerydslPredicateExecutor<Evento>,
                                           QuerydslBinderCustomizer<QEvento> {
-    
-    @NativeQuery("SELECT e.* FROM evento e " +
-                 "JOIN evento_subevento es ON s.id = es.subevento_id " + 
-                 "WHERE es.evento_id = :id")
-    Page<Evento> findSubeventosByParentId(long id, Pageable pageable);
+    /* 
+    Query no padrão SQL:
+       SELECT e.* 
+       FROM evento as e 
+       JOIN evento_composto_subeventos as ecs
+       ON e.id = ecs.subeventos_id AND ecs.evento_composto_id = :id
+    */
+    @Query("select s from EventoComposto ec join ec.subeventos s where ec.id = :id")
+    Page<Evento> findSubeventosByParentId(@Param("id") long id, Pageable pageable);
                                             
     @Override
     default void customize(QuerydslBindings bindings, QEvento root) {

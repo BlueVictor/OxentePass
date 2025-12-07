@@ -108,16 +108,13 @@ public class EventoServiceImpl implements EventoService {
 
     @Override
     public void deletarEvento(long idEvento) {
-        if(!eventoRepository.existsById(idEvento))
-            throw new EventoInvalidoException("O evento a ser deletado não existe.");
-
-        eventoRepository.deleteById(idEvento); // Pensar se soft delete faz sentido para evento
+        Evento evento = buscarEventoId(idEvento);
+        eventoRepository.delete(evento); // Pensar se soft delete faz sentido para evento
     }
 
     // Tags
     @Override
-    // Adicionar tag existente
-    public void adicionarTag(long idEvento, long idTag) {
+    public void adicionarTagExistente(long idEvento, long idTag) {
         Evento evento = buscarEventoId(idEvento);
 
         Optional<Tag> tagBusca = tagRepository.findById(idTag);
@@ -132,8 +129,7 @@ public class EventoServiceImpl implements EventoService {
 
     @Override
     @Transactional 
-    // Adicionar nova tag
-    public void adicionarTag(long idEvento, Tag tag) {
+    public void adicionarTagNova(long idEvento, Tag tag) {
         Evento evento = buscarEventoId(idEvento);
 
         tagService.criarTag(tag);
@@ -171,8 +167,7 @@ public class EventoServiceImpl implements EventoService {
 
     // Pontos de Venda
     @Override
-    // Adicionar ponto de venda existente
-    public void adicionarPontoVenda(long idEvento, long idPontoVenda) { 
+    public void adicionarPontoVendaExistente(long idEvento, long idPontoVenda) { 
         Evento evento = buscarEventoId(idEvento);
 
         Optional<PontoVenda> pontoVendaBusca = pontoVendaRepository.findById(idPontoVenda);
@@ -186,8 +181,7 @@ public class EventoServiceImpl implements EventoService {
     }
 
     @Override
-    // Adicionar ponto de venda existente
-    public void adicionarPontoVenda(long idEvento, PontoVenda pontoVenda) { //Precisa do Service de PontoVenda
+    public void adicionarPontoVendaNovo(long idEvento, PontoVenda pontoVenda) { //Precisa do Service de PontoVenda
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'adicionarPontoVenda'");
     }
@@ -251,7 +245,7 @@ public class EventoServiceImpl implements EventoService {
     
         return this.paraDTOPage(
             eventoRepository.findSubeventosByParentId(idEvento, pageable)
-        ); //Testar
+        );
     }
 
     @Override
