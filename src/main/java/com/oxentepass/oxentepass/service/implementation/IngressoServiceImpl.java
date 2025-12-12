@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.oxentepass.oxentepass.entity.Ingresso;
-import com.oxentepass.oxentepass.repository.EventoRepository;
 import com.oxentepass.oxentepass.repository.IngressoRepository;
 import com.oxentepass.oxentepass.service.IngressoService;
 
@@ -16,9 +15,6 @@ public class IngressoServiceImpl implements IngressoService {
 
     @Autowired
     private IngressoRepository ingressoRepository;
-
-    @Autowired
-    private EventoRepository eventoRepository;
 
     @Override
     public void cadastrarIngresso(Ingresso ingresso) {
@@ -59,7 +55,7 @@ public class IngressoServiceImpl implements IngressoService {
 
     @Override
     public Page<Ingresso> ingressosDisponiveis(Long idEvento, Pageable pageable) {
-        Page<Ingresso> ingressos = eventoRepository.findByEventoId(idEvento, pageable);
+        Page<Ingresso> ingressos = ingressoRepository.findByEventoId(idEvento, pageable);
 
         if (ingressos.isEmpty()) {
             throw new IllegalArgumentException("Não existem ingressos para o evento de id " + idEvento);
