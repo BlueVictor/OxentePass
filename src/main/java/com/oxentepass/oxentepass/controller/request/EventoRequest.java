@@ -3,6 +3,7 @@ package com.oxentepass.oxentepass.controller.request;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.oxentepass.oxentepass.entity.Cidade;
 import com.oxentepass.oxentepass.entity.Endereco;
 import com.oxentepass.oxentepass.entity.Evento;
 import com.oxentepass.oxentepass.entity.EventoComposto;
@@ -23,6 +24,9 @@ public record EventoRequest(
 
     @NotNull(message = "O evento deve contar com um organizador.")
     Organizador organizador,
+
+    @NotNull(message = "O evento deve contar com uma cidade sede.")
+    Cidade cidade,
     
     @FutureOrPresent(message = "O campo \"dataHoraInicio\" deve estar no presente ou futuro.")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -51,6 +55,7 @@ public record EventoRequest(
         evento.setNome(nome);
         evento.setDescricao(descricao);
         evento.setOrganizador(organizador);
+        evento.setCidade(cidade);
         evento.setDataHoraInicio(dataHoraInicio);
         evento.setDataHoraFim(dataHoraFim);
         evento.setClassificacao(classificacao);
