@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.oxentepass.oxentepass.entity.Avaliacao;
+import com.oxentepass.oxentepass.entity.Cidade;
 import com.oxentepass.oxentepass.entity.Endereco;
 import com.oxentepass.oxentepass.entity.Evento;
 import com.oxentepass.oxentepass.entity.Ingresso;
@@ -15,6 +16,7 @@ public record EventoResponse(
     String nome,
     String descricao,
     UsuarioResponse organizador,
+    Cidade cidade,
     List<Tag> tags,
     List<Ingresso> ingressos,
     LocalDateTime dataHoraInicio,
@@ -31,12 +33,12 @@ public record EventoResponse(
         return new EventoResponse (
             evento.getId(), evento.getNome(), evento.getDescricao(), 
             UsuarioResponse.paraDTO(evento.getOrganizador()),
-            evento.getTags(), evento.getIngressos(),
-            evento.getDataHoraInicio(), evento.getDataHoraFim(),
-            evento.getClassificacao(), evento.getEmailContato(),
-            evento.getTelefoneContato(), evento.getEndereco(),
-            evento.getPontosVenda(), evento.getAvaliacoes(),
-            evento.getMediaAvaliacao()
+            evento.getCidade(), evento.getTags(), 
+            evento.getIngressos(), evento.getDataHoraInicio(), 
+            evento.getDataHoraFim(), evento.getClassificacao(), 
+            evento.getEmailContato(), evento.getTelefoneContato(), 
+            evento.getEndereco(), evento.getPontosVenda(), 
+            evento.getAvaliacoes(), evento.getMediaAvaliacao()
         );
     }
 } 

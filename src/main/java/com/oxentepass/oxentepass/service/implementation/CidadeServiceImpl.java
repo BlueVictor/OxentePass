@@ -9,15 +9,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.oxentepass.oxentepass.entity.Cidade;
-import com.oxentepass.oxentepass.entity.Evento;
 import com.oxentepass.oxentepass.entity.Tag;
 import com.oxentepass.oxentepass.exceptions.RecursoDuplicadoException;
 import com.oxentepass.oxentepass.exceptions.RecursoNaoEncontradoException;
 import com.oxentepass.oxentepass.repository.CidadeRepository;
-import com.oxentepass.oxentepass.repository.EventoRepository;
 import com.oxentepass.oxentepass.repository.TagRepository;
 import com.oxentepass.oxentepass.service.CidadeService;
-import com.oxentepass.oxentepass.service.EventoService;
 import com.oxentepass.oxentepass.service.TagService;
 import com.querydsl.core.types.Predicate;
 
@@ -30,15 +27,9 @@ public class CidadeServiceImpl implements CidadeService {
     @Autowired
     private TagRepository tagRepository;
 
-    @Autowired
-    private EventoRepository eventoRepository;
-
     // Outros Services
     @Autowired
     private TagService tagService;
-
-    @Autowired
-    private EventoService eventoService;
 
     // Métodos auxiliares
     private Cidade buscarCidadePorId(long id) {
@@ -132,29 +123,4 @@ public class CidadeServiceImpl implements CidadeService {
         cidade.removerTag(tagBusca.get());
         cidadeRepository.save(cidade);
     }
-
-    // Eventos
-    @Override
-    @Transactional //Cria um novo evento. (Talvez faça sentido haver um método que adicione um evento já existente)
-    public void adicionarEvento(long idCidade, Evento evento) {
-        Cidade cidade = buscarCidadePorId(idCidade);
-
-        eventoService.criarEvento(evento);
-
-        cidade.addEvento(evento);
-        cidadeRepository.save(cidade);
-    }
-
-    @Override
-    public void removerEvento(long idCidade, long idEvento) {
-        Cidade cidade = buscarCidadePorId(idCidade);
-        
-        Optional<Evento> eventoBusca = eventoRepository.findById(idEvento);
-        if (eventoBusca.isEmpty())
-            throw new RecursoNaoEncontradoException("O evento com id " + idEvento + " não existe.");
-
-        cidade.removerEvento(eventoBusca.get());
-        cidadeRepository.save(cidade);
-    }
-    
 }

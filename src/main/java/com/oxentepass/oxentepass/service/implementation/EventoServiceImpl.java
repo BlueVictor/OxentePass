@@ -119,6 +119,7 @@ public class EventoServiceImpl implements EventoService {
         eventoEdicao.setNome(evento.getNome());                         // Nome
         eventoEdicao.setDescricao(evento.getDescricao());               // Descricao
         eventoEdicao.setOrganizador(evento.getOrganizador());           // Organizador
+        eventoEdicao.setCidade(evento.getCidade());                     // Cidade
         eventoEdicao.setDataHoraInicio(evento.getDataHoraInicio());     // DataHoraInicio
         eventoEdicao.setDataHoraFim(evento.getDataHoraFim());           // DataHoraFim
         eventoEdicao.setClassificacao(evento.getClassificacao());       // Classificacao
