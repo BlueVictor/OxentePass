@@ -28,4 +28,8 @@ public class Ingresso {
         this.quantidadeDisponivel -= quantidade;
     }
 
+    public void devolverQuantidade(int quantidade) {
+        this.quantidadeDisponivel += quantidade;
+    }
+
 }
