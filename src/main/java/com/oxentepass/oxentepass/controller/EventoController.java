@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.oxentepass.oxentepass.controller.request.EventoRequest;
+import com.oxentepass.oxentepass.controller.request.IngressoRequest;
 import com.oxentepass.oxentepass.controller.request.TagRequest;
 import com.oxentepass.oxentepass.controller.response.EventoResponse;
 import com.oxentepass.oxentepass.entity.Evento;
@@ -123,16 +124,24 @@ public class EventoController {
     }
 
     //Ingressos
-    @PatchMapping("/{idEvento}/addIngresso") //Adicionar DTO de entrada
-    public ResponseEntity<String> adicionarIngresso (@PathVariable long idEvento) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'adicionarIngresso'");
+    @PatchMapping("/{idEvento}/addIngresso")
+    public ResponseEntity<String> adicionarIngresso (@PathVariable long idEvento, @RequestBody @Valid IngressoRequest dto) {
+        eventoService.adicionarIngresso(idEvento, dto.paraEntidade());
+
+        return new ResponseEntity<String>(
+            "Ingresso " + dto.tipoIngresso() + " associado ao evento com id " + idEvento + " com sucesso!", 
+            HttpStatus.CREATED
+        );
     }
 
     @PatchMapping("/{idEvento}/removerIngresso/{idIngresso}")
     public ResponseEntity<String> removerIngresso (@PathVariable long idEvento, @PathVariable long idIngresso) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'removerIngresso'");
+        eventoService.removerIngresso(idEvento, idIngresso);
+
+        return new ResponseEntity<String>(
+            "Ingresso com id " + idIngresso + " removido do evento com id " + idEvento + " com sucesso!", 
+            HttpStatus.OK
+        );
     }
 
     //Pontos de venda
