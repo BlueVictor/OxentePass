@@ -101,6 +101,11 @@ public interface EventoRepository extends JpaRepository<Evento, Long>,
         bindings.bind(root.organizador.id)
                 .as("organizador")
                 .first((NumberPath<Long> path, Long value) -> path.eq(value));
+
+        // Bind para cidade (seleção por nome da cidade)
+        bindings.bind(root.cidade.nome)
+                .as("cidade")
+                .first((StringPath path, String value) -> path.containsIgnoreCase(value));
     }
 
 }
