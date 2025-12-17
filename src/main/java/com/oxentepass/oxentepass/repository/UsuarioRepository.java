@@ -42,7 +42,4 @@ public interface UsuarioRepository extends
 
     Optional<Usuario> findByCpf(String cpf);
 
-    // TODO (Guilherme): remover?
-    // Optional<Usuario> findByEmail(String email);
-
 }
