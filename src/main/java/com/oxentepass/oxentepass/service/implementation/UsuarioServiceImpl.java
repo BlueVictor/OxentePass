@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.oxentepass.oxentepass.entity.Usuario;
@@ -19,6 +20,8 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Autowired
     private UsuarioRepository repository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public void cadastrarUsuario(Usuario usuario) {
@@ -26,18 +29,18 @@ public class UsuarioServiceImpl implements UsuarioService {
         String cpfLimpo = usuario.getCpf().replaceAll("\\D", "");
         usuario.setCpf(cpfLimpo);
 
-        Optional<Usuario> existingUser = repository.findByCpf(usuario.getCpf());
+        Optional<Usuario> existingUser = repository.findByCpfOrEmail(cpfLimpo, usuario.getEmail());
 
         if (existingUser.isPresent()) {
-            throw new RecursoDuplicadoException("Já existe um usuário registrado com este CPF");
+            throw new RecursoDuplicadoException("Já existe um usuário registrado com este CPF ou Email");
         }
 
-        // TODO (Guilherme): criptografia para senha?
+        String senhaCriptografada = passwordEncoder.encode(usuario.getSenha());
+        usuario.setSenha(senhaCriptografada);
 
         repository.save(usuario);
     };
 
-    // TODO (Guilherme): paia?
     @Override
     public void loginUsuario(String cpf, String senha) {
         Optional<Usuario> optionalUser = repository.findByCpf(cpf);
@@ -46,7 +49,9 @@ public class UsuarioServiceImpl implements UsuarioService {
             throw new RecursoNaoEncontradoException("Nenhum usuário encontrado para o cpf " + cpf);
         }
 
-        if (!senha.equals(optionalUser.get().getSenha())) {
+        Usuario usuario = optionalUser.get();
+
+        if (!passwordEncoder.matches(senha, usuario.getSenha())) {
             throw new EstadoInvalidoException("Senha incorreta para este usuário");
         }
     };
