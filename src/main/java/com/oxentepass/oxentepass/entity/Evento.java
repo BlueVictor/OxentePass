@@ -58,9 +58,13 @@ public abstract class Evento {
 
     private double mediaAvaliacao;
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Imagem> imagens;
+
     private int altura; // Atributo para limitar possível árvore de sub-eventos
 
     //Métodos
+    // Tags
     public void addTag(Tag tag) {
         if (this.tags.contains(tag))
             throw new EstadoInvalidoException("A tag informada já consta no evento " + this.nome + ".");
@@ -73,6 +77,7 @@ public abstract class Evento {
             throw new RecursoNaoEncontradoException("A tag informada não consta no evento " + this.nome + ".");
     }
 
+    // Ingressos
     public void addIngresso(Ingresso ingresso) {
         if (this.ingressos.contains(ingresso))
             throw new EstadoInvalidoException("O ingresso informado já consta no evento " + this.nome + ".");
@@ -85,6 +90,7 @@ public abstract class Evento {
             throw new RecursoNaoEncontradoException("O ingresso informado não consta no evento " + this.nome + ".");
     }
 
+    // Ponto de Venda
     public void addPontoVenda(PontoVenda pontoVenda) {
         if (this.pontosVenda.contains(pontoVenda))
             throw new EstadoInvalidoException("O ponto de venda informado já consta no evento " + this.nome + ".");
@@ -97,6 +103,7 @@ public abstract class Evento {
             throw new RecursoNaoEncontradoException("O ponto de venda informado não consta no evento " + this.nome + ".");
     }
 
+    // Avaliações
     public void addAvaliacao(Avaliacao avaliacao) {
         if (this.avaliacoes.contains(avaliacao))
             throw new RecursoDuplicadoException("A avaliação já foi publicada.");
@@ -129,5 +136,15 @@ public abstract class Evento {
             total += aval.getNota();
 
         this.mediaAvaliacao = (double)(total / this.avaliacoes.size());
+    }
+
+    // Imagens
+    public void addImagem(Imagem imagem) {
+        this.imagens.add(imagem);
+    }
+
+    public void removerImagem(Imagem imagem) {
+        if (!this.imagens.remove(imagem)) 
+            throw new RecursoNaoEncontradoException("A imagem informada não consta no evento " + this.nome + ".");
     }
 }
