@@ -37,6 +37,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         repository.save(usuario);
     };
 
+    // TODO (Guilherme): paia?
     @Override
     public void loginUsuario(String cpf, String senha) {
         Optional<Usuario> optionalUser = repository.findByCpf(cpf);
