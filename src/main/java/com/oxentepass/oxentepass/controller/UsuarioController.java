@@ -59,7 +59,6 @@ public class UsuarioController {
 
     }
 
-    // TODO (Guilherme): está correto?
     @PostMapping("/login")
     public ResponseEntity<String> loginUsuario(@RequestBody @Valid UsuarioLoginRequest dto) {
 
