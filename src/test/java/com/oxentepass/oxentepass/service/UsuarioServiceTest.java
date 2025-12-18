@@ -1,11 +1,10 @@
 package com.oxentepass.oxentepass.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.List;
-
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,115 +29,61 @@ public class UsuarioServiceTest {
     @Autowired
     private UsuarioService service;
 
-    @Test
-    public void deveRegistrarUsuarioTest() {
+    private Usuario userBase;
 
-        List<Usuario> usuariosAnteriores = repository.findAll();
-
-        Usuario user = new Usuario();
-        user.setNome("Guy Fawkes");
-        user.setCpf("17617617617");
-        user.setEmail("guy.fawkes@email.com");
-        user.setSenha("vendetta");
-
-        repository.save(user);
-
-        List<Usuario> usuariosPosteriores = repository.findAll();
-
-        String usuarioCPF = usuariosPosteriores.get(0).getCpf();
-
-        assertEquals(usuarioCPF, "17617617617");
-        assertEquals(usuariosAnteriores.size() + 1, usuariosPosteriores.size());
-
+    @BeforeEach
+    void setup() {
+        userBase = new Usuario();
+        userBase.setNome("Guy Fawkes");
+        userBase.setCpf("176.176.176-17");
+        userBase.setEmail("guy.fawkes@email.com");
+        userBase.setSenha("vendetta");
     }
 
     @Test
-    public void deveRejeitarRegistroUsuarioTest() {
-        Usuario user = new Usuario();
-        user.setNome("Guy Fawkes");
-        user.setCpf("17617617617");
-        user.setEmail("guy.fawkes@email.com");
-        user.setSenha("vendetta");
+    public void deveRegistrarUsuarioTest() {
+        long qtdeInicial = repository.count();
 
-        repository.save(user);
+        service.cadastrarUsuario(userBase);
 
-        assertThrows(RecursoDuplicadoException.class, () -> service.cadastrarUsuario(user));
+        assertThat(repository.count()).isEqualTo(qtdeInicial + 1);
+
+        Usuario salvo = repository.findByCpf("17617617617").orElseThrow();
+        assertThat(salvo.getNome()).isEqualTo("Guy Fawkes");
+    }
+
+    @Test
+    public void deveRejeitarRegistroDuplicadoUsuarioTest() {
+        service.cadastrarUsuario(userBase);
+
+        // Tentativa de duplicar o mesmo CPF
+        assertThrows(RecursoDuplicadoException.class, () -> service.cadastrarUsuario(userBase));
     }
 
     @Test
     public void deveAutenticarUsuarioTest() {
-
-        Usuario user = new Usuario();
-        user.setNome("Guy Fawkes");
-        user.setCpf("17617617617");
-        user.setEmail("guy.fawkes@email.com");
-        user.setSenha("vendetta");
-
-        repository.save(user);
-
+        service.cadastrarUsuario(userBase);
         assertDoesNotThrow(() -> service.loginUsuario("17617617617", "vendetta"));
     }
 
     @Test
-    public void deveRejeitarCpfUsuarioTest() {
-
-        Usuario user = new Usuario();
-        user.setNome("Guy Fawkes");
-        user.setCpf("17617617617");
-        user.setEmail("guy.fawkes@email.com");
-        user.setSenha("vendetta");
-
-        repository.save(user);
-
-        assertThrows(RecursoNaoEncontradoException.class,
-                () -> service.loginUsuario("17617617617", "vendetta"));
-    }
-
-    @Test
     public void deveRejeitarSenhaUsuarioTest() {
-
-        Usuario user = new Usuario();
-
-        user.setNome("Guy Fawkes");
-        user.setCpf("17617617617");
-        user.setEmail("guy.fawkes@email.com");
-        user.setSenha("vendetta");
-
-        repository.save(user);
-
+        service.cadastrarUsuario(userBase);
         assertThrows(EstadoInvalidoException.class,
-                () -> service.loginUsuario("17617617617", "vendeta"));
+                () -> service.loginUsuario("17617617617", "senhaErrada"));
     }
 
     @Test
     public void deveAtualizarUsuarioTest() {
+        service.cadastrarUsuario(userBase);
 
-        Usuario user = new Usuario();
+        userBase.setNome("Guido Fawkes");
+        userBase.setEmail("guido@email.com");
+        service.editarUsuario(userBase.getId(), userBase);
 
-        user.setNome("Guy Fawkes");
-        user.setCpf("17617617617");
-        user.setEmail("guy.fawkes@email.com");
-        user.setSenha("vendetta");
-
-        repository.save(user);
-
-        List<Usuario> usuariosAnteriores = repository.findAll();
-        String nomeUsuarioDesatualizado = usuariosAnteriores.get(0).getNome();
-
-        user.setNome("Guido Fawkes");
-        user.setCpf("17171717171");
-        user.setEmail("guido.fawkes@email.com");
-        user.setSenha("VforVendetta");
-
-        service.editarUsuario(1L, user);
-
-        List<Usuario> usuariosPosteriores = repository.findAll();
-        String nomeUsuarioAtualizado = usuariosPosteriores.get(0).getNome();
-
-        assertEquals(usuariosAnteriores, usuariosPosteriores);
-        assertEquals(nomeUsuarioDesatualizado, "Guy Fawkes");
-        assertEquals(nomeUsuarioAtualizado, "Guido Fawkes");
-
+        Usuario atualizado = repository.findById(userBase.getId())
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado para este ID"));
+        assertThat(atualizado.getNome()).isEqualTo("Guido Fawkes");
+        assertThat(atualizado.getEmail()).isEqualTo("guido@email.com");
     }
-
 }
