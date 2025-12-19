@@ -115,8 +115,6 @@ public class ImagemEventoServiceImpl implements ImagemEventoService {
     @Override
     @Transactional
     public void adicionarImagem(long idEvento, MultipartFile file, boolean ehCapa) {
-        System.out.println("\n\n" + System.getenv("AWS_ACCESS_KEY_ID") + "\n\n");
-
         Evento evento = buscarEventoId(idEvento);
         
         verificarImagem(file);
@@ -146,6 +144,7 @@ public class ImagemEventoServiceImpl implements ImagemEventoService {
     }
 
     @Override
+    @Transactional
     public void removerImagem(long idEvento, long idImagem) {
         Evento evento = buscarEventoId(idEvento);
 
@@ -153,6 +152,16 @@ public class ImagemEventoServiceImpl implements ImagemEventoService {
 
         deletarImagemS3(imagem.getChaveS3());
 
+        evento.removerImagem(imagem);
+        eventoRepository.save(evento);
+    }
+
+    // Usado pelo método "deletarEvento" em EventoService (evitar consultas duplicadas ao banco)
+    @Override
+    @Transactional
+    public void removerImagem(Evento evento, Imagem imagem) {
+        deletarImagemS3(imagem.getChaveS3());
+        
         evento.removerImagem(imagem);
         eventoRepository.save(evento);
     }
