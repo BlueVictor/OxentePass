@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 
 @RestController
-@RequestMapping("/eventos/{idEvento}/imagens")
+@RequestMapping("/evento/{idEvento}/imagens")
 public class ImagemEventoController {
     
     @Autowired
