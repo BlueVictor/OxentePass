@@ -24,6 +24,7 @@ import com.oxentepass.oxentepass.repository.EventoRepository;
 import com.oxentepass.oxentepass.repository.PontoVendaRepository;
 import com.oxentepass.oxentepass.repository.TagRepository;
 import com.oxentepass.oxentepass.service.EventoService;
+import com.oxentepass.oxentepass.service.ImagemEventoService;
 import com.oxentepass.oxentepass.service.IngressoService;
 import com.oxentepass.oxentepass.service.TagService;
 import com.querydsl.core.types.Predicate;
@@ -46,6 +47,9 @@ public class EventoServiceImpl implements EventoService {
 
     @Autowired
     private IngressoService ingressoService;
+
+    @Autowired
+    private ImagemEventoService imagemEventoService;
 
     //Métodos Auxiliares
     private Evento buscarEventoId(long id) {
@@ -135,9 +139,15 @@ public class EventoServiceImpl implements EventoService {
     }
 
     @Override
+    @Transactional
     public void deletarEvento(long idEvento) {
         Evento evento = buscarEventoId(idEvento);
-        eventoRepository.delete(evento); // Pensar se soft delete faz sentido para evento
+
+        // É preciso remover as imagens do AWS S3 ao deletar o evento
+        for (int i = 0; i < evento.getImagens().size(); i++) 
+            imagemEventoService.removerImagem(evento, evento.getImagens().get(i));  
+        
+        eventoRepository.delete(evento);
     }
 
     // Tags
