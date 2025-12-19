@@ -26,7 +26,11 @@ public interface VendaRepository extends JpaRepository<Venda, Long>, QuerydslPre
 
         bindings.bind(root.status).first((path, value) -> path.eq(value));
 
-        bindings.bind(root.valorTotal).first((path, value) -> path.goe(value));
+        bindings.bind(root.valorTotal).as("ValorIgual").first((path, value) -> path.eq(value));
+
+        bindings.bind(root.valorTotal).as("ValorMenor").first((path, value) -> path.loe(value));
+
+        bindings.bind(root.valorTotal).as("ValorMaior").first((path, value) -> path.goe(value));
 
         bindings.bind(root.dataHoraVenda).first((path, value) -> path.after(value));
         

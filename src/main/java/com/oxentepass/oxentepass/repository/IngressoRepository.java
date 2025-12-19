@@ -32,7 +32,11 @@ public interface IngressoRepository extends JpaRepository<Ingresso, Long>, Query
 
         bindings.bind(root.tipo).first((StringPath path, String value) -> path.containsIgnoreCase(value));
 
-        bindings.bind(root.valorBase).first((path, value) -> path.eq(value));
+        bindings.bind(root.valorBase).as("ValorIgual").first((path, value) -> path.eq(value));
+
+        bindings.bind(root.valorBase).as("ValorMenor").first((path, value) -> path.loe(value));
+
+        bindings.bind(root.valorBase).as("ValorMaior").first((path, value) -> path.goe(value));
 
         bindings.bind(root.quantidadeDisponivel).first((path, value) -> path.goe(value));
 
