@@ -50,12 +50,12 @@ public class OrganizadorServiceImpl implements OrganizadorService {
     }
 
     @Override
-    public void editarOrganizador(long id, Organizador dados) {
+    public void editarOrganizador(long id, OrganizadorRequest dados) {
         Organizador organizador = buscaOrganizador(id);
         
-        organizador.setCnpj(dados.getCnpj());
-        organizador.setTelefone(dados.getTelefone());
-        organizador.setBiografia(dados.getBiografia());
+        organizador.setCnpj(dados.cnpj());
+        organizador.setTelefone(dados.telefone());
+        organizador.setBiografia(dados.biografia());
 
         organizadorRepository.save(organizador);
     }

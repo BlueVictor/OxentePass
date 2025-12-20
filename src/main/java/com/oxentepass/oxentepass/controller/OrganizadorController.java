@@ -21,23 +21,23 @@ public class OrganizadorController {
     private OrganizadorService service;
 
     @PostMapping("/promover")
-    public ResponseEntity<String> promover(@RequestBody @Valid OrganizadorRequest dto) {
+    public ResponseEntity<String> promoverUsuario(@RequestBody @Valid OrganizadorRequest dto) {
         service.promoverUsuario(dto);
         return new ResponseEntity<String>("Usuário promovido a Organizador com sucesso!", HttpStatus.CREATED);
     }
 
     @PutMapping
-    public ResponseEntity<String> editar(@RequestBody long id, @RequestBody @Valid Organizador dados) {
-        service.editarOrganizador(id, dados);
+    public ResponseEntity<String> editarOrganizador(@RequestBody @Valid OrganizadorRequest dados) {
+        service.editarOrganizador(dados.usuarioId(), dados);
         
         return new ResponseEntity<String>(
-            "Organizador com id " + id + " atualizado com sucesso!",
+            "Organizador com id " + dados.usuarioId() + " atualizado com sucesso!",
             HttpStatus.OK
         );
     }
 
     @GetMapping
-    public ResponseEntity<Page<Organizador>> listar(Pageable pageable) {
+    public ResponseEntity<Page<Organizador>> listarOrganizadores(Pageable pageable) {
         return new ResponseEntity<>(service.listarOrganizadores(pageable), HttpStatus.OK);
     }
 }
