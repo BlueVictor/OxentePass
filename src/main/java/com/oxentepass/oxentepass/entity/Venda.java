@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.oxentepass.oxentepass.exceptions.EstadoInvalidoException;
+import com.oxentepass.oxentepass.exceptions.OperacaoProibidaException;
 import com.oxentepass.oxentepass.exceptions.RecursoNaoEncontradoException;
 
 import jakarta.persistence.Entity;
@@ -47,10 +49,12 @@ public class Venda {
     // Métodos
     public void addIngresso(IngressoVenda ingressoVenda) {
         this.ingressos.add(ingressoVenda);
+        calcularValorTotal();
     }
 
-    public void removerIngresso(IngressoVenda ingressoVenda) {
-        boolean resultado = this.ingressos.remove(ingressoVenda);
+    public void removerIngresso(Long IdIngressoVenda) {
+        boolean resultado = this.ingressos.remove(IdIngressoVenda);
+        calcularValorTotal();
 
         if (!resultado)
             throw new RecursoNaoEncontradoException("Este ingresso não se encontra na venda!");
@@ -67,7 +71,7 @@ public class Venda {
 
     public void finalizar() {
         if (this.status != StatusVenda.ABERTA) {
-            throw new IllegalStateException("A venda só pode ser finalizada se estiver aberta");
+            throw new EstadoInvalidoException("A venda só pode ser finalizada se estiver aberta");
         }
     
         this.status = StatusVenda.FINALIZADA;
@@ -77,7 +81,7 @@ public class Venda {
 
     public void cancelar() {
         if (this.status == StatusVenda.CANCELADA) {
-            throw new IllegalStateException("Venda já está cancelada");
+            throw new OperacaoProibidaException("Venda já está cancelada");
         }
     
         devolverIngressos();
