@@ -10,12 +10,13 @@ import org.springframework.stereotype.Repository;
 
 import com.oxentepass.oxentepass.entity.QVenda;
 import com.oxentepass.oxentepass.entity.Venda;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.NumberPath;
 
 @Repository
 public interface VendaRepository extends JpaRepository<Venda, Long>, QuerydslPredicateExecutor<Venda>, QuerydslBinderCustomizer<QVenda> {
 
-    Page<Venda> findByUsuarioId(Long idUsuario, Pageable pageable);
+    Page<Venda> findByUsuarioId(Long idUsuario, Predicate predicate, Pageable pageable);
 
     @Override
     default void customize(QuerydslBindings bindings, QVenda root) {
