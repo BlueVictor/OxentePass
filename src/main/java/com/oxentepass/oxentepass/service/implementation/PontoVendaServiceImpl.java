@@ -21,12 +21,8 @@ public class PontoVendaServiceImpl implements PontoVendaService {
     @Override
     public void cadastrarPontoVenda(PontoVenda pontoVenda) {
 
-        if (repository.existsByNomeAndEnderecoCepAndEnderecoNumero(
-                pontoVenda.getNome(),
-                pontoVenda.getEndereco().getCep(),
-                pontoVenda.getEndereco().getNumero())) {
+        if (pontoVendaExistente(pontoVenda))
             throw new RecursoDuplicadoException("Já existe um Ponto de Venda registrado para este Nome, Cep e Número!");
-        }
 
         repository.save(pontoVenda);
     }
@@ -36,6 +32,9 @@ public class PontoVendaServiceImpl implements PontoVendaService {
 
         PontoVenda pontoVenda = repository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Nenhum Ponto de Venda encontrado para este id!"));
+
+        if (pontoVendaExistente(pontoVenda))
+            throw new RecursoDuplicadoException("Já existe um Ponto de Venda registrado para este Nome, Cep e Número!");
 
         pontoVenda.setNome(dados.getNome());
         pontoVenda.setDetalhes(dados.getDetalhes());
@@ -63,6 +62,13 @@ public class PontoVendaServiceImpl implements PontoVendaService {
     @Override
     public Page<PontoVenda> listarPontoVendasFiltro(Predicate predicate, Pageable pageable) {
         return repository.findAll(predicate, pageable);
+    }
+
+    private boolean pontoVendaExistente(PontoVenda pontoVenda) {
+        return (repository.existsByNomeAndEnderecoCepAndEnderecoNumero(
+                pontoVenda.getNome(),
+                pontoVenda.getEndereco().getCep(),
+                pontoVenda.getEndereco().getNumero()));
     }
 
 }
