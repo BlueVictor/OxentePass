@@ -48,14 +48,6 @@ public class IngressoController {
         );
     }
 
-    @GetMapping("/buscar/tipo/{tipoIngresso}")
-    public ResponseEntity<Ingresso> buscarIngressoPorTipo (@PathVariable String tipoIngresso) {
-        return new ResponseEntity<Ingresso>(
-            ingressoService.buscarIngressPorTipo(tipoIngresso), 
-            HttpStatus.OK
-        );
-    }
-
     @GetMapping("/disponivel/{idEvento}")
     public ResponseEntity<Page<Ingresso>> quantidadeIngressosDisponiveis (@PathVariable Long idEvento, Pageable pageable) {
         return new ResponseEntity<Page<Ingresso>>(
