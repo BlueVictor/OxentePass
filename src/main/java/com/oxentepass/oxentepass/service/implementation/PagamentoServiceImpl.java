@@ -1,6 +1,5 @@
 package com.oxentepass.oxentepass.service.implementation;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.oxentepass.oxentepass.entity.Pagamento;
-import com.oxentepass.oxentepass.entity.StatusPagamento;
 import com.oxentepass.oxentepass.exceptions.RecursoNaoEncontradoException;
 import com.oxentepass.oxentepass.repository.PagamentoRepository;
 import com.oxentepass.oxentepass.service.PagamentoService;
@@ -23,8 +21,6 @@ public class PagamentoServiceImpl implements PagamentoService {
 
     @Override
     public void criarPagamento(Pagamento pagamento) {
-        pagamento.setStatus(StatusPagamento.PENDENTE);
-        pagamento.setDataPagamento(LocalDateTime.now());
         pagamentoRepository.save(pagamento);
     }
 
