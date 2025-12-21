@@ -50,16 +50,6 @@ public class IngressoServiceImpl implements IngressoService {
     }
 
     @Override
-    public Ingresso buscarIngressPorTipo(String tipo) {
-        Optional<Ingresso> ingressoBusca = ingressoRepository.findByTipo(tipo);
-
-        if (ingressoBusca.isEmpty()) 
-            throw new RecursoNaoEncontradoException("Ingresso do tipo " + tipo + " não existe.");
-        
-        return ingressoBusca.get();
-    }
-
-    @Override
     public Page<Ingresso> ingressosDisponiveis(Long idEvento, Pageable pageable) {
         Page<Ingresso> ingressos = ingressoRepository.findByEventoId(idEvento, pageable);
 

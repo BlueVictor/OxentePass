@@ -13,6 +13,5 @@ public interface IngressoService {
     public Page<Ingresso> listarTodosIngressos(Pageable pageable);
     public Page<Ingresso> filtrarIngressos(Predicate predicate, Pageable pageable);
     public Ingresso buscarIngressoPorId(Long id);
-    public Ingresso buscarIngressPorTipo(String tipo);
     public Page<Ingresso> ingressosDisponiveis(Long idEvento, Pageable pageable);
 }
