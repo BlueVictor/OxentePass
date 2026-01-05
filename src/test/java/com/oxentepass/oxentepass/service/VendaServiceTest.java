@@ -21,6 +21,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.oxentepass.oxentepass.entity.IngressoVenda;
 import com.oxentepass.oxentepass.entity.Venda;
@@ -30,7 +32,9 @@ import com.oxentepass.oxentepass.service.implementation.VendaServiceImpl;
 import com.querydsl.core.types.Predicate;
 
 @ExtendWith(MockitoExtension.class)
-class VendaServiceImplTest {
+@ActiveProfiles("test")
+@Transactional
+class VendaServiceTest {
 
     @Mock
     private VendaRepository vendaRepository;
