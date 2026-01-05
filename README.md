@@ -18,6 +18,10 @@ Este projeto, desenvolvido para a disciplina de **Programação Web**, visa ser 
 ### 🖥️ Frontend
 * **Framework/Biblioteca:** React
 
+## Swagger
+- Rotas da API mapeadas com Swagger/OpenAPI 
+- O **Swagger** encontra-se disponível na URL: `http://localhost:8080/swagger-ui/index.html`
+
 ## 👥 Integrantes do Projeto
 - [Arthur de Sá](https://github.com/ruhtra5000)
 - [Guilherme Paes](https://github.com/Guy1717)
