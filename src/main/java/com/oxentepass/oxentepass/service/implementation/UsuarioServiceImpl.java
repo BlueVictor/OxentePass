@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import com.querydsl.core.types.Predicate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -94,6 +95,11 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public Page<Usuario> listarUsuarios(Pageable pageable) {
         return repository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Usuario> listarUsuariosFiltro(Predicate predicate, Pageable pageable) {
+        return repository.findAll(predicate, pageable);
     }
 
 }
