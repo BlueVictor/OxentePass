@@ -9,7 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.oxentepass.oxentepass.controller.request.OrganizadorRequest;
+import com.oxentepass.oxentepass.controller.response.OrganizadorResponse;
 import com.oxentepass.oxentepass.entity.Organizador;
+import com.oxentepass.oxentepass.service.AuthSessionService;
 import com.oxentepass.oxentepass.service.AutorizacaoService;
 import com.oxentepass.oxentepass.service.OrganizadorService;
 import com.querydsl.core.types.Predicate;
@@ -31,6 +33,8 @@ public class OrganizadorController {
     private OrganizadorService service;
     @Autowired
     private AutorizacaoService autorizacaoService;
+    @Autowired
+    private AuthSessionService authSessionService;
 
     @Operation(summary = "Promover Usuário a Organizador", description = "Promove um Usuário comum a Organizador")
     @PostMapping("/promover")
@@ -51,6 +55,17 @@ public class OrganizadorController {
         return new ResponseEntity<String>(
                 "Organizador com id " + dados.usuarioId() + " atualizado com sucesso!",
                 HttpStatus.OK);
+    }
+
+    @Operation(summary = "Meu perfil de organizador", description = "Retorna os dados do organizador autenticado")
+    @GetMapping("/me")
+    public ResponseEntity<OrganizadorResponse> buscarMeuPerfilOrganizador(HttpServletRequest request) {
+        autorizacaoService.exigirUsuarioOrganizador(request);
+
+        long usuarioId = authSessionService.obterUsuarioAutenticado(request).getId();
+        Organizador organizador = service.buscarOrganizadorPorId(usuarioId);
+
+        return new ResponseEntity<OrganizadorResponse>(OrganizadorResponse.paraDTO(organizador), HttpStatus.OK);
     }
 
     @Operation(summary = "Listar Organizadores", description = "Retorna os Organizadores cadastrados")

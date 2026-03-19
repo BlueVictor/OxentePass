@@ -26,8 +26,12 @@ public class AuthController {
     @GetMapping("/me")
     public ResponseEntity<AuthResponse> buscarUsuarioAutenticado(HttpServletRequest request) {
         Usuario usuario = authSessionService.obterUsuarioAutenticado(request);
+        boolean organizador = authSessionService.usuarioAutenticadoEhOrganizador(request);
 
-        return new ResponseEntity<AuthResponse>(AuthResponse.paraDTO(usuario), HttpStatus.OK);
+        return new ResponseEntity<AuthResponse>(
+            AuthResponse.paraDTO(usuario.getId(), usuario.getNome(), usuario.getEmail(), organizador),
+            HttpStatus.OK
+        );
     }
 
     @Operation(summary = "Logout", description = "Encerra a sessao autenticada atual")

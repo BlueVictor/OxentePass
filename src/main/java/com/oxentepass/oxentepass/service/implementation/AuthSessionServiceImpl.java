@@ -3,9 +3,9 @@ package com.oxentepass.oxentepass.service.implementation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.oxentepass.oxentepass.entity.Organizador;
 import com.oxentepass.oxentepass.entity.Usuario;
 import com.oxentepass.oxentepass.exceptions.NaoAutenticadoException;
+import com.oxentepass.oxentepass.repository.OrganizadorRepository;
 import com.oxentepass.oxentepass.service.AuthSessionService;
 import com.oxentepass.oxentepass.service.UsuarioService;
 
@@ -19,6 +19,8 @@ public class AuthSessionServiceImpl implements AuthSessionService {
 
     @Autowired
     private UsuarioService usuarioService;
+    @Autowired
+    private OrganizadorRepository organizadorRepository;
 
     @Override
     public Usuario obterUsuarioAutenticado(HttpServletRequest request) {
@@ -50,6 +52,8 @@ public class AuthSessionServiceImpl implements AuthSessionService {
 
     @Override
     public boolean usuarioAutenticadoEhOrganizador(HttpServletRequest request) {
-        return obterUsuarioAutenticado(request) instanceof Organizador;
+        long usuarioId = obterUsuarioAutenticado(request).getId();
+
+        return organizadorRepository.existsById(usuarioId);
     }
 }

@@ -104,8 +104,12 @@ public class UsuarioController {
 
         Usuario usuario = service.loginUsuario(dto.cpf(), dto.senha());
         authSessionService.autenticarSessao(request, usuario);
+        boolean organizador = authSessionService.usuarioAutenticadoEhOrganizador(request);
 
-        return new ResponseEntity<AuthResponse>(AuthResponse.paraDTO(usuario), HttpStatus.OK);
+        return new ResponseEntity<AuthResponse>(
+            AuthResponse.paraDTO(usuario.getId(), usuario.getNome(), usuario.getEmail(), organizador),
+            HttpStatus.OK
+        );
     }
 
     @Operation(summary = "Perfil do usuário autenticado", description = "Retorna os dados completos do usuário autenticado na sessão atual")

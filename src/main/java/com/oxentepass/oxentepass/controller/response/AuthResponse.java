@@ -1,8 +1,5 @@
 package com.oxentepass.oxentepass.controller.response;
 
-import com.oxentepass.oxentepass.entity.Organizador;
-import com.oxentepass.oxentepass.entity.Usuario;
-
 public record AuthResponse(
     long id,
     String nome,
@@ -10,12 +7,12 @@ public record AuthResponse(
     String tipoUsuario,
     boolean autenticado
 ) {
-    public static AuthResponse paraDTO(Usuario usuario) {
+    public static AuthResponse paraDTO(long id, String nome, String email, boolean organizador) {
         return new AuthResponse(
-            usuario.getId(),
-            usuario.getNome(),
-            usuario.getEmail(),
-            usuario instanceof Organizador ? "ORGANIZADOR" : "USUARIO",
+            id,
+            nome,
+            email,
+            organizador ? "ORGANIZADOR" : "USUARIO",
             true
         );
     }
