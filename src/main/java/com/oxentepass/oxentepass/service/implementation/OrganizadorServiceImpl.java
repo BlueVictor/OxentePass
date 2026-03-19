@@ -36,7 +36,8 @@ public class OrganizadorServiceImpl implements OrganizadorService {
     public void promoverUsuario(OrganizadorRequest dados) {
         Usuario usuario = buscaUsuario(dados.usuarioId());
 
-        if (organizadorRepository.existsById(usuario.getId()))
+        if (organizadorRepository.existsById(usuario.getId()) ||
+                organizadorRepository.findByCnpj(dados.cnpj()).isPresent())
             throw new RecursoDuplicadoException("Usuário com id " + usuario.getId() + " já é um organizador.");
 
         // 3. Query Nativa para inserção na tabela filha (Herança JOINED)
@@ -48,6 +49,11 @@ public class OrganizadorServiceImpl implements OrganizadorService {
                 .setParameter("tel", dados.telefone())
                 .setParameter("bio", dados.biografia())
                 .executeUpdate();
+    }
+
+    @Override
+    public Organizador buscarOrganizadorPorId(long id) {
+        return buscaOrganizador(id);
     }
 
     @Override

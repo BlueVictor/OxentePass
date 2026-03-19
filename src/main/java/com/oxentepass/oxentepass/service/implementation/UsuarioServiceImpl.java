@@ -42,17 +42,23 @@ public class UsuarioServiceImpl implements UsuarioService {
     };
 
     @Override
-    public void loginUsuario(String cpf, String senha) {
+    public Usuario loginUsuario(String cpf, String senha) {
         String cpfLimpo = cpf.replaceAll("\\D", "");
         
         Optional<Usuario> optionalUser = repository.findByCpf(cpfLimpo);
 
-        Usuario usuario = optionalUser.get();
-
-        if (optionalUser.isEmpty() || !passwordEncoder.matches(senha, usuario.getSenha())) {
+        if (optionalUser.isEmpty() || !passwordEncoder.matches(senha, optionalUser.get().getSenha())) {
             throw new RecursoNaoEncontradoException("CPF ou senha inválidos!");
         }
+
+        return optionalUser.get();
     };
+
+    @Override
+    public Usuario buscarUsuarioPorId(long id) {
+        return repository.findById(id)
+            .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário com id " + id + " não encontrado!"));
+    }
 
     @Override
     public void editarUsuario(long id, Usuario dados) {

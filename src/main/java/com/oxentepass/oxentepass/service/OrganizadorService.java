@@ -11,6 +11,8 @@ public interface OrganizadorService {
 
     public void promoverUsuario(OrganizadorRequest dados);
 
+    public Organizador buscarOrganizadorPorId(long id);
+
     public void editarOrganizador(long id, OrganizadorRequest dados);
 
     public Page<Organizador> listarOrganizadores(Pageable pageable);

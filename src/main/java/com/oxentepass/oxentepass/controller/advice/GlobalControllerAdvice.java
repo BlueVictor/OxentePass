@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.oxentepass.oxentepass.exceptions.ArquivoInvalidoException;
 import com.oxentepass.oxentepass.exceptions.EstadoInvalidoException;
+import com.oxentepass.oxentepass.exceptions.NaoAutenticadoException;
 import com.oxentepass.oxentepass.exceptions.OperacaoProibidaException;
 import com.oxentepass.oxentepass.exceptions.RecursoDuplicadoException;
 import com.oxentepass.oxentepass.exceptions.RecursoNaoEncontradoException;
@@ -99,6 +100,21 @@ public class GlobalControllerAdvice {
         return new ResponseEntity<ErroResponse>(
             erroResponse, 
             HttpStatus.CONFLICT
+        );
+    }
+
+    @ExceptionHandler(NaoAutenticadoException.class)
+    public ResponseEntity<ErroResponse> lidarComNaoAutenticadoException(NaoAutenticadoException exception, HttpServletRequest request) {
+        ErroResponse erroResponse = new ErroResponse();
+
+        erroResponse.setStatus(401);
+        erroResponse.setErro("Nao Autenticado");
+        erroResponse.setMensagem(exception.getMessage());
+        erroResponse.setPath(request.getRequestURI());
+
+        return new ResponseEntity<ErroResponse>(
+            erroResponse,
+            HttpStatus.UNAUTHORIZED
         );
     }
 
