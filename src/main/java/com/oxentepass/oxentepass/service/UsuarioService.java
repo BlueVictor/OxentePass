@@ -10,7 +10,9 @@ public interface UsuarioService {
 
     public void cadastrarUsuario(Usuario usuario);
 
-    public void loginUsuario(String cpf, String senha);
+    public Usuario loginUsuario(String cpf, String senha);
+
+    public Usuario buscarUsuarioPorId(long id);
 
     public void editarUsuario(long id, Usuario dados);
 

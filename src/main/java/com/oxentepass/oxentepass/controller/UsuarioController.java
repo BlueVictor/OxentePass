@@ -19,10 +19,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.oxentepass.oxentepass.controller.request.UsuarioLoginRequest;
 import com.oxentepass.oxentepass.controller.request.UsuarioRequest;
+import com.oxentepass.oxentepass.controller.response.AuthResponse;
 import com.oxentepass.oxentepass.entity.Usuario;
+import com.oxentepass.oxentepass.exceptions.NaoAutenticadoException;
 import com.oxentepass.oxentepass.service.UsuarioService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 /**
@@ -33,6 +37,8 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/usuario")
 public class UsuarioController {
+
+    private static final String SESSION_USER_ID = "usuarioId";
 
     @Autowired
     private UsuarioService service;
@@ -84,6 +90,16 @@ public class UsuarioController {
     @Operation(summary = "Login de Usuário", description = "Autentica um Usuário com CPF e senha")
     @PostMapping("/login")
     public ResponseEntity<String> loginUsuario(@RequestBody @Valid UsuarioLoginRequest dto) {
+    public ResponseEntity<AuthResponse> loginUsuario(
+            @RequestBody @Valid UsuarioLoginRequest dto,
+            HttpServletRequest request) {
+
+        Usuario usuario = service.loginUsuario(dto.cpf(), dto.senha());
+        HttpSession session = request.getSession(true);
+        session.setAttribute(SESSION_USER_ID, usuario.getId());
+
+        return new ResponseEntity<AuthResponse>(AuthResponse.paraDTO(usuario), HttpStatus.OK);
+    }
 
         service.loginUsuario(dto.cpf(), dto.senha());
 
