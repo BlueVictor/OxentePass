@@ -10,10 +10,12 @@ import org.springframework.web.bind.annotation.*;
 
 import com.oxentepass.oxentepass.controller.request.OrganizadorRequest;
 import com.oxentepass.oxentepass.entity.Organizador;
+import com.oxentepass.oxentepass.service.AutorizacaoService;
 import com.oxentepass.oxentepass.service.OrganizadorService;
 import com.querydsl.core.types.Predicate;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 /**
@@ -27,17 +29,23 @@ public class OrganizadorController {
 
     @Autowired
     private OrganizadorService service;
+    @Autowired
+    private AutorizacaoService autorizacaoService;
 
     @Operation(summary = "Promover Usuário a Organizador", description = "Promove um Usuário comum a Organizador")
     @PostMapping("/promover")
-    public ResponseEntity<String> promoverUsuario(@RequestBody @Valid OrganizadorRequest dto) {
+    public ResponseEntity<String> promoverUsuario(@RequestBody @Valid OrganizadorRequest dto, HttpServletRequest request) {
+        autorizacaoService.exigirMesmoUsuario(request, dto.usuarioId());
+
         service.promoverUsuario(dto);
-        return new ResponseEntity<String>("Usuário promovido a Organizador com sucesso!", HttpStatus.CREATED);
+        return new ResponseEntity<String>("Usuario promovido a Organizador com sucesso!", HttpStatus.CREATED);
     }
 
     @Operation(summary = "Editar Organizador", description = "Edita os dados do Organizador com id especificado")
     @PutMapping
-    public ResponseEntity<String> editarOrganizador(@RequestBody @Valid OrganizadorRequest dados) {
+    public ResponseEntity<String> editarOrganizador(@RequestBody @Valid OrganizadorRequest dados, HttpServletRequest request) {
+        autorizacaoService.exigirMesmoUsuario(request, dados.usuarioId());
+
         service.editarOrganizador(dados.usuarioId(), dados);
 
         return new ResponseEntity<String>(

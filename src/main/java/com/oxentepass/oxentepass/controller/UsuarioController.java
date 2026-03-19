@@ -23,8 +23,9 @@ import com.oxentepass.oxentepass.controller.response.AuthResponse;
 import com.oxentepass.oxentepass.controller.response.UsuarioPublicoResponse;
 import com.oxentepass.oxentepass.controller.response.UsuarioResponse;
 import com.oxentepass.oxentepass.entity.Usuario;
+import com.oxentepass.oxentepass.service.AuthSessionService;
+import com.oxentepass.oxentepass.service.AutorizacaoService;
 import com.oxentepass.oxentepass.service.UsuarioService;
-import com.oxentepass.oxentepass.service.implementation.AuthSessionServiceImpl;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
@@ -42,7 +43,9 @@ public class UsuarioController {
     @Autowired
     private UsuarioService service;
     @Autowired
-    private AuthSessionServiceImpl authSessionService;
+    private AuthSessionService authSessionService;
+    @Autowired
+    private AutorizacaoService autorizacaoService;
 
     @Operation(summary = "Cadastrar Usuário", description = "Cadastra um novo Usuário")
     @PostMapping
@@ -73,7 +76,8 @@ public class UsuarioController {
 
     @Operation(summary = "Editar Usuário", description = "Edita os dados do Usuário com id especificado")
     @PutMapping("/{id}")
-    public ResponseEntity<String> editarUsuario(@PathVariable long id, @RequestBody @Valid UsuarioRequest dto) {
+    public ResponseEntity<String> editarUsuario(@PathVariable long id, @RequestBody @Valid UsuarioRequest dto, HttpServletRequest request) {
+        autorizacaoService.exigirMesmoUsuario(request, id);
 
         service.editarUsuario(id, dto.paraEntidade());
 
@@ -83,7 +87,8 @@ public class UsuarioController {
 
     @Operation(summary = "Deletar Usuário", description = "Deleta o Usuário com id especificado")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deletarUsuario(@PathVariable long id) {
+    public ResponseEntity<String> deletarUsuario(@PathVariable long id, HttpServletRequest request) {
+        autorizacaoService.exigirMesmoUsuario(request, id);
 
         service.deletarUsuario(id);
 

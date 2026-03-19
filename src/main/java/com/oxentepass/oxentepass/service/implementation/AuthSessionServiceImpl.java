@@ -6,19 +6,21 @@ import org.springframework.stereotype.Service;
 import com.oxentepass.oxentepass.entity.Organizador;
 import com.oxentepass.oxentepass.entity.Usuario;
 import com.oxentepass.oxentepass.exceptions.NaoAutenticadoException;
+import com.oxentepass.oxentepass.service.AuthSessionService;
 import com.oxentepass.oxentepass.service.UsuarioService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 @Service
-public class AuthSessionServiceImpl {
+public class AuthSessionServiceImpl implements AuthSessionService {
 
     public static final String SESSION_USER_ID = "usuarioId";
 
     @Autowired
     private UsuarioService usuarioService;
 
+    @Override
     public Usuario obterUsuarioAutenticado(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
 
@@ -31,11 +33,13 @@ public class AuthSessionServiceImpl {
         return usuarioService.buscarUsuarioPorId(usuarioId);
     }
 
+    @Override
     public void autenticarSessao(HttpServletRequest request, Usuario usuario) {
         HttpSession session = request.getSession(true);
         session.setAttribute(SESSION_USER_ID, usuario.getId());
     }
 
+    @Override
     public void invalidarSessao(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
 
@@ -44,6 +48,7 @@ public class AuthSessionServiceImpl {
         }
     }
 
+    @Override
     public boolean usuarioAutenticadoEhOrganizador(HttpServletRequest request) {
         return obterUsuarioAutenticado(request) instanceof Organizador;
     }

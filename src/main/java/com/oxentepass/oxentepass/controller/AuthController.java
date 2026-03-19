@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.oxentepass.oxentepass.controller.response.AuthResponse;
 import com.oxentepass.oxentepass.entity.Usuario;
-import com.oxentepass.oxentepass.service.implementation.AuthSessionServiceImpl;
+import com.oxentepass.oxentepass.service.AuthSessionService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,7 +20,7 @@ import jakarta.servlet.http.HttpServletRequest;
 public class AuthController {
 
     @Autowired
-    private AuthSessionServiceImpl authSessionService;
+    private AuthSessionService authSessionService;
 
     @Operation(summary = "Usuario autenticado", description = "Retorna os dados basicos do usuario autenticado na sessao atual")
     @GetMapping("/me")
