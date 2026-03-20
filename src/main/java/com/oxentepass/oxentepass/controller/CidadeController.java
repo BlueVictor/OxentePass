@@ -40,10 +40,9 @@ public class CidadeController {
     // Operações Básicas
     @Operation(summary = "Criar Cidade", description = "Cria uma nova Cidade")
     @PostMapping
-    public ResponseEntity<String> criarCidade (@RequestBody @Valid CidadeRequest dto) {
-        cidadeService.criarCidade(dto.paraEntidade());
-        return new ResponseEntity<String>(
-            "Cidade " + dto.nome() + " criada com sucesso!", 
+    public ResponseEntity<Cidade> criarCidade (@RequestBody @Valid CidadeRequest dto) {
+        return new ResponseEntity<Cidade>(
+            cidadeService.criarCidade(dto.paraEntidade()), 
             HttpStatus.CREATED
         );
     }
