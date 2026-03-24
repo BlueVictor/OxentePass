@@ -285,22 +285,18 @@ public class EventoController {
     //Sub-Eventos
     @Operation(summary = "Criar novo Sub-Evento Simples", description = "Cria um sub-evento simples e o vincula ao EventoComposto com id especificado")
     @PatchMapping("/{idEvento}/addSubeventoSimples")
-    public ResponseEntity<String> criarSubEventoSimples (@PathVariable long idEvento, @RequestBody @Valid EventoRequest dto) {
-        eventoService.criarSubevento(idEvento, dto.paraEntidade(true));
-        
-        return new ResponseEntity<String>(
-            "Sub-evento simples " + dto.nome() + " criado com sucesso!", 
+    public ResponseEntity<EventoResponse> criarSubEventoSimples (@PathVariable long idEvento, @RequestBody @Valid EventoRequest dto) {
+        return new ResponseEntity<EventoResponse>(
+            eventoService.criarSubevento(idEvento, dto.paraEntidade(true)), 
             HttpStatus.CREATED
         );
     }
 
     @Operation(summary = "Criar novo Sub-Evento Composto", description = "Cria um sub-evento composto e o vincula ao EventoComposto com id especificado")
     @PatchMapping("/{idEvento}/addSubeventoComposto")
-    public ResponseEntity<String> criarSubEventoComposto (@PathVariable long idEvento, @RequestBody @Valid EventoRequest dto) {
-        eventoService.criarSubevento(idEvento, dto.paraEntidade(false));
-        
-        return new ResponseEntity<String>(
-            "Sub-evento composto " + dto.nome() + " criado com sucesso!", 
+    public ResponseEntity<EventoResponse> criarSubEventoComposto (@PathVariable long idEvento, @RequestBody @Valid EventoRequest dto) {       
+        return new ResponseEntity<EventoResponse>(
+            eventoService.criarSubevento(idEvento, dto.paraEntidade(false)), 
             HttpStatus.CREATED
         );
     }

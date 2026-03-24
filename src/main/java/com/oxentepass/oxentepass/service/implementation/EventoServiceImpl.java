@@ -409,7 +409,7 @@ public class EventoServiceImpl implements EventoService {
     // Sub-Eventos
     @Override
     @Transactional
-    public void criarSubevento(long idEvento, Evento subevento) {
+    public EventoResponse criarSubevento(long idEvento, Evento subevento) {
         Evento evento = buscarEventoId(idEvento);
         
         // Definindo a altura da árvore com esse sub-evento incluso
@@ -424,9 +424,11 @@ public class EventoServiceImpl implements EventoService {
         if (checagemDataSubevento(evento, subevento))
             throw new EstadoInvalidoException("O horário do sub-evento precisa estar dentro do horário do evento principal.");
         
-        criarEvento(subevento);
+        EventoResponse subeventoResponse = criarEvento(subevento);
         ((EventoComposto)evento).addSubevento(subevento);
         eventoRepository.save(evento);  
+
+        return subeventoResponse;
     }
 
     @Override
