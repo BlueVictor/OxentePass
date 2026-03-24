@@ -146,8 +146,9 @@ public class EventoServiceImpl implements EventoService {
         return pontoVendaRepository.existsByNomeAndEnderecoCepAndEnderecoNumero(nome, cep, numero);
     }
 
-    private boolean pontoVendaContido(PontoVenda pontoVenda) {
-        return eventoRepository.existsByPontosVendaNomeAndPontosVendaEnderecoCepAndPontosVendaEnderecoNumero(
+    private boolean pontoVendaContido(long idEvento, PontoVenda pontoVenda) {
+        return eventoRepository.existsByIdAndPontosVendaNomeAndPontosVendaEnderecoCepAndPontosVendaEnderecoNumero(
+            idEvento,
             pontoVenda.getNome(),
             pontoVenda.getEndereco().getCep(),
             pontoVenda.getEndereco().getNumero()
@@ -306,7 +307,7 @@ public class EventoServiceImpl implements EventoService {
 
         PontoVenda pontoVenda = pontoVendaBusca.get();
         
-        if(pontoVendaContido(pontoVenda))
+        if(pontoVendaContido(idEvento, pontoVenda))
             throw new EstadoInvalidoException("Esse Ponto de Venda já está registrado neste evento!");
 
         evento.addPontoVenda(pontoVenda);
