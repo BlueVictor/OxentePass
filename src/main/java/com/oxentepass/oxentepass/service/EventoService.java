@@ -40,5 +40,6 @@ public interface EventoService extends TagManipulacao {
     // Sub-Eventos
     public EventoResponse criarSubevento(long idEvento, Evento subevento);
     public Page<EventoResponse> listarSubeventos(long idEvento, Pageable pageable);
+    public Page<EventoImagemResponse> listarSubeventosComImagem(long idEvento, Pageable pageable);
     public void removerSubevento(long idEvento, long idSubevento);
 }

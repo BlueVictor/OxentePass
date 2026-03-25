@@ -309,6 +309,15 @@ public class EventoController {
             HttpStatus.OK
         );
     }
+
+    @Operation(summary = "Listar Sub-Eventos de um EventoComposto com uma imagem", description = "Lista os Sub-Eventos com imagem + paginação")
+    @GetMapping("/{idEvento}/subeventos/comImg")
+    public ResponseEntity<Page<EventoImagemResponse>> listarSubEventosComImagem (@PathVariable long idEvento, Pageable pageable) {
+        return new ResponseEntity<Page<EventoImagemResponse>>(
+            eventoService.listarSubeventosComImagem(idEvento, pageable), 
+            HttpStatus.OK
+        );
+    }
    
     @Operation(summary = "Deletar Sub-Evento de um EventoComposto", description = "Desvincula e exclui o sub-evento com id especificado do EventoComposto com id especificado")
     @PatchMapping("/{idEvento}/removerSubevento/{idSubevento}")

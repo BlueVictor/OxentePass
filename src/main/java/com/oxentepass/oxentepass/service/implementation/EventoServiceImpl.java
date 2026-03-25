@@ -444,6 +444,18 @@ public class EventoServiceImpl implements EventoService {
     }
 
     @Override
+    public Page<EventoImagemResponse> listarSubeventosComImagem(long idEvento, Pageable pageable) {
+        Evento evento = buscarEventoId(idEvento);
+
+        if (!(evento instanceof EventoComposto)) 
+            throw new OperacaoProibidaException("O evento com id " + idEvento + " não suporta sub-eventos.");
+    
+        return this.paraDTOImgPage(
+            eventoRepository.findSubeventosByParentId(idEvento, pageable)
+        );
+    }
+
+    @Override
     @Transactional
     public void removerSubevento(long idEvento, long idSubevento) {
         Evento evento = buscarEventoId(idEvento);
