@@ -71,7 +71,7 @@ public interface EventoRepository extends JpaRepository<Evento, Long>,
    @Query("select count(a) > 0 from Evento e join e.avaliacoes a where e.id = :idEvento and a.usuarioId = :idUsuario")
    boolean existsAvaliacaoByEventoIdAndUsuarioId(@Param("idEvento") long idEvento, @Param("idUsuario") long idUsuario);
 
-   boolean existsByPontosVendaNomeAndPontosVendaEnderecoCepAndPontosVendaEnderecoNumero(String nome, String cep, int numero);
+   boolean existsByIdAndPontosVendaNomeAndPontosVendaEnderecoCepAndPontosVendaEnderecoNumero(long id, String nome, String cep, int numero);
     @Override
     default void customize(QuerydslBindings bindings, QEvento root) {
         // Bind para ID

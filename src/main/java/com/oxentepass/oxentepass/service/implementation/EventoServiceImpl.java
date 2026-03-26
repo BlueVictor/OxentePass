@@ -146,8 +146,9 @@ public class EventoServiceImpl implements EventoService {
         return pontoVendaRepository.existsByNomeAndEnderecoCepAndEnderecoNumero(nome, cep, numero);
     }
 
-    private boolean pontoVendaContido(PontoVenda pontoVenda) {
-        return eventoRepository.existsByPontosVendaNomeAndPontosVendaEnderecoCepAndPontosVendaEnderecoNumero(
+    private boolean pontoVendaContido(long idEvento, PontoVenda pontoVenda) {
+        return eventoRepository.existsByIdAndPontosVendaNomeAndPontosVendaEnderecoCepAndPontosVendaEnderecoNumero(
+            idEvento,
             pontoVenda.getNome(),
             pontoVenda.getEndereco().getCep(),
             pontoVenda.getEndereco().getNumero()
@@ -223,8 +224,17 @@ public class EventoServiceImpl implements EventoService {
         // É preciso remover as imagens do AWS S3 ao deletar o evento
         for (int i = 0; i < evento.getImagens().size(); i++) 
             imagemEventoService.removerImagem(evento, evento.getImagens().get(i));  
+
+        // Checagem para sub-eventos
+        if (eventoRepository.isSubevento(idEvento)) {
+            Evento eventoPai = eventoRepository.findEventoPaiBySubeventoId(idEvento).get();
+
+            ((EventoComposto)eventoPai).removerSubevento(evento);
+            eventoRepository.save(eventoPai);
+        }
         
         eventoRepository.delete(evento);
+
     }
 
     // Tags
@@ -306,7 +316,7 @@ public class EventoServiceImpl implements EventoService {
 
         PontoVenda pontoVenda = pontoVendaBusca.get();
         
-        if(pontoVendaContido(pontoVenda))
+        if(pontoVendaContido(idEvento, pontoVenda))
             throw new EstadoInvalidoException("Esse Ponto de Venda já está registrado neste evento!");
 
         evento.addPontoVenda(pontoVenda);
@@ -408,7 +418,7 @@ public class EventoServiceImpl implements EventoService {
     // Sub-Eventos
     @Override
     @Transactional
-    public void criarSubevento(long idEvento, Evento subevento) {
+    public EventoResponse criarSubevento(long idEvento, Evento subevento) {
         Evento evento = buscarEventoId(idEvento);
         
         // Definindo a altura da árvore com esse sub-evento incluso
@@ -423,9 +433,11 @@ public class EventoServiceImpl implements EventoService {
         if (checagemDataSubevento(evento, subevento))
             throw new EstadoInvalidoException("O horário do sub-evento precisa estar dentro do horário do evento principal.");
         
-        criarEvento(subevento);
+        EventoResponse subeventoResponse = criarEvento(subevento);
         ((EventoComposto)evento).addSubevento(subevento);
         eventoRepository.save(evento);  
+
+        return subeventoResponse;
     }
 
     @Override
@@ -436,6 +448,18 @@ public class EventoServiceImpl implements EventoService {
             throw new OperacaoProibidaException("O evento com id " + idEvento + " não suporta sub-eventos.");
     
         return this.paraDTOPage(
+            eventoRepository.findSubeventosByParentId(idEvento, pageable)
+        );
+    }
+
+    @Override
+    public Page<EventoImagemResponse> listarSubeventosComImagem(long idEvento, Pageable pageable) {
+        Evento evento = buscarEventoId(idEvento);
+
+        if (!(evento instanceof EventoComposto)) 
+            throw new OperacaoProibidaException("O evento com id " + idEvento + " não suporta sub-eventos.");
+    
+        return this.paraDTOImgPage(
             eventoRepository.findSubeventosByParentId(idEvento, pageable)
         );
     }
