@@ -7,15 +7,16 @@ import com.oxentepass.oxentepass.entity.Pagamento;
 import com.oxentepass.oxentepass.entity.Usuario;
 import com.oxentepass.oxentepass.entity.Venda;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 public record VendaRequest(
 
-    @NotBlank(message = "O campo \"usuario\" é obrigatório.")
+    @NotNull(message = "O usuário é obrigatório")
     Usuario usuario,
-    @NotBlank(message = "O campo \"ingressos\" é obrigatório.")
+    @NotEmpty(message = "A venda deve ter pelo menos um ingresso")
     List<IngressoVenda> ingressos,
-    @NotBlank(message = "O campo \"pagamento\" é obrigatório.")
+    @NotNull(message = "O pagamento é obrigatório")
     Pagamento pagamento
 
 ) {

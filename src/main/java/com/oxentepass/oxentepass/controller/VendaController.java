@@ -44,13 +44,20 @@ public class VendaController {
     // Endpoints
 
     // Criar uma nova venda
-    @Operation(summary = "Criar Venda", description = "Cria uma nova Venda")
+    @Operation(summary = "Criar Venda", description = "Cria uma nova Venda e retorna o objeto com ID")
     @PostMapping("/criar")
-    public ResponseEntity<String> criarVenda(@RequestBody @Valid VendaRequest dto) {
-        vendaService.criarVenda(dto.paraEntidade());
+    public ResponseEntity<Venda> criarVenda(@RequestBody @Valid VendaRequest dto) {
+        
+        Venda venda = dto.paraEntidade();
 
-        return new ResponseEntity<String>(
-            "Venda criada com sucesso!", 
+        if (venda.getIngressos() != null) {
+            venda.getIngressos().forEach(item -> item.setVenda(venda));
+        }
+        
+        Venda novaVenda = vendaService.criarVenda(venda);
+
+        return new ResponseEntity<Venda>(
+            novaVenda, 
             HttpStatus.CREATED
         );
     }
@@ -125,7 +132,7 @@ public class VendaController {
     
     // Buscar venda por ID
     @Operation(summary = "Buscar Venda por ID", description = "Retorna uma Venda com o ID especificado")
-    @GetMapping("/buscar/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<VendaResponse> buscarVendaPorId(@PathVariable long id) {
         
         return ResponseEntity.ok(

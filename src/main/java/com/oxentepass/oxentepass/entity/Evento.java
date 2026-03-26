@@ -38,7 +38,7 @@ public abstract class Evento {
     @ManyToMany
     private List<Tag> tags;
     
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "evento", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ingresso> ingressos;
 
     private LocalDateTime dataHoraInicio;
@@ -83,6 +83,7 @@ public abstract class Evento {
             throw new EstadoInvalidoException("O ingresso informado já consta no evento " + this.nome + ".");
 
         this.ingressos.add(ingresso);
+        ingresso.setEvento(this);
     }
 
     public void removerIngresso(Ingresso ingresso) {

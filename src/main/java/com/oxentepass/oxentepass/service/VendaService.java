@@ -10,7 +10,7 @@ import com.querydsl.core.types.Predicate;
 
 public interface VendaService {
     // Operações Básicas
-    public void criarVenda(Venda venda);
+    public Venda criarVenda(Venda venda);
     public Page<Venda> listarTodasVendas(Pageable pageable);
     public Page<Venda> filtrarVendas(Predicate predicate, Pageable pageable);
     public Venda buscarVendaPorId(long id);

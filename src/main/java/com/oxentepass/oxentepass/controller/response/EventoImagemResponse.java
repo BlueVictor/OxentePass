@@ -34,7 +34,7 @@ public record EventoImagemResponse(
     public static EventoImagemResponse paraDTO(Evento evento, Imagem imagem) {
         return new EventoImagemResponse (
             evento.getId(), evento.getNome(), evento.getDescricao(), 
-            UsuarioResponse.paraDTO(evento.getOrganizador()),
+            evento.getOrganizador() != null ? UsuarioResponse.paraDTO(evento.getOrganizador()) : null,
             evento.getCidade(), evento.getTags(), 
             evento.getIngressos(), evento.getDataHoraInicio(), 
             evento.getDataHoraFim(), evento.getClassificacao(), 

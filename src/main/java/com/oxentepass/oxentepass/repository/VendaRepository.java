@@ -2,6 +2,7 @@ package com.oxentepass.oxentepass.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
@@ -16,6 +17,7 @@ import com.querydsl.core.types.dsl.NumberPath;
 @Repository
 public interface VendaRepository extends JpaRepository<Venda, Long>, QuerydslPredicateExecutor<Venda>, QuerydslBinderCustomizer<QVenda> {
 
+    @EntityGraph(attributePaths = {"ingressos", "usuario", "pagamento"})
     Page<Venda> findByUsuarioId(Long idUsuario, Predicate predicate, Pageable pageable);
 
     @Override

@@ -14,9 +14,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.Data;
 
@@ -24,16 +25,16 @@ import lombok.Data;
 @Data
 public class Venda {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @ManyToOne
     private Usuario usuario;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "venda", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<IngressoVenda> ingressos;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Pagamento pagamento;
 
     private LocalDateTime dataHoraVenda;
@@ -51,6 +52,7 @@ public class Venda {
 
     // Adiciona um ingresso à venda
     public void addIngresso(IngressoVenda ingressoVenda) {
+        ingressoVenda.setVenda(this);
         this.ingressos.add(ingressoVenda);
         calcularValorTotal();
     }

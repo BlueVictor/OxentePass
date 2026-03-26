@@ -2,6 +2,7 @@ package com.oxentepass.oxentepass.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.oxentepass.oxentepass.service.IngressoService;
 import com.querydsl.core.types.Predicate;
 
@@ -12,12 +13,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+
 import com.oxentepass.oxentepass.entity.Ingresso;
 import com.oxentepass.oxentepass.entity.Pagamento;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
+import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  * @author Victor Cauã
@@ -35,6 +39,14 @@ public class IngressoController {
     // As operações de criar e deletar ingresso
     // estão em EventoController, para que não sejam
     // criados ingressos desvinculados de eventos
+
+    // Editar ingressos
+    @Operation(summary = "Editar Ingresso", description = "Edita um Ingresso existente pelo seu ID")
+    @PutMapping("/editar/{idIngresso}")
+    public ResponseEntity<Void> editarIngresso (@PathVariable Long idIngresso, @RequestBody Ingresso ingresso) { // ⬅️ MUDOU AQUI (Adicionado @RequestBody)
+        ingressoService.editarIngresso(idIngresso, ingresso);
+        return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+    }
 
     // Listar todos os ingressos
     @Operation(summary = "Listar Ingressos", description = "Lista todos os Ingressos cadastrados")

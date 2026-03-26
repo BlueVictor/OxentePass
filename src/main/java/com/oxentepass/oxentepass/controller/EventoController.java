@@ -12,6 +12,7 @@ import com.oxentepass.oxentepass.controller.response.EventoImagemResponse;
 import com.oxentepass.oxentepass.controller.response.EventoResponse;
 import com.oxentepass.oxentepass.entity.Avaliacao;
 import com.oxentepass.oxentepass.entity.Evento;
+import com.oxentepass.oxentepass.entity.Organizador;
 import com.oxentepass.oxentepass.entity.Usuario;
 import com.oxentepass.oxentepass.service.AuthSessionService;
 import com.oxentepass.oxentepass.service.EventoService;
@@ -52,18 +53,34 @@ public class EventoController {
     private AuthSessionService authSessionService;
 
     @PostMapping("/simples")
-    public ResponseEntity<EventoResponse> criarEventoSimples (@RequestBody @Valid EventoRequest dto) {
+    public ResponseEntity<EventoResponse> criarEventoSimples (@RequestBody @Valid EventoRequest dto, HttpServletRequest request) {
+        Usuario usuario = authSessionService.obterUsuarioAutenticado(request);
+        
+        Evento evento = dto.paraEntidade(true);
+        
+        Organizador organizador = new Organizador();
+        organizador.setId(usuario.getId());
+        evento.setOrganizador(organizador);
+
         return new ResponseEntity<EventoResponse>(
-            eventoService.criarEvento(dto.paraEntidade(true)), 
+            eventoService.criarEvento(evento), 
             HttpStatus.CREATED
         );
     }
 
     @Operation(summary = "Criar novo Evento Composto", description = "Cria um novo EventoComposto, que suporta sub-eventos")
     @PostMapping("/composto")
-    public ResponseEntity<EventoResponse> criarEventoComposto (@RequestBody @Valid EventoRequest dto) {
+    public ResponseEntity<EventoResponse> criarEventoComposto (@RequestBody @Valid EventoRequest dto, HttpServletRequest request) {
+        Usuario usuario = authSessionService.obterUsuarioAutenticado(request);
+        
+        Evento evento = dto.paraEntidade(false);
+        
+        Organizador organizador = new Organizador();
+        organizador.setId(usuario.getId());
+        evento.setOrganizador(organizador);
+
         return new ResponseEntity<EventoResponse>(
-            eventoService.criarEvento(dto.paraEntidade(false)), 
+            eventoService.criarEvento(evento), 
             HttpStatus.CREATED
         );
     }

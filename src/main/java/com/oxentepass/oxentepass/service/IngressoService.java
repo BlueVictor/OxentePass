@@ -10,6 +10,7 @@ public interface IngressoService {
     // Operações Básicas
     public void cadastrarIngresso(Ingresso ingresso);
     public void deletarIngresso(Long id);
+    public void editarIngresso(Long id, Ingresso ingresso);
     public Page<Ingresso> listarTodosIngressos(Pageable pageable);
     public Page<Ingresso> filtrarIngressos(Predicate predicate, Pageable pageable);
     public Ingresso buscarIngressoPorId(Long id);

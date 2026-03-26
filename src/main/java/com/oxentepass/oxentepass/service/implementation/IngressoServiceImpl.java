@@ -34,6 +34,17 @@ public class IngressoServiceImpl implements IngressoService {
         ingressoRepository.delete(ingresso);
     }
 
+    // Edita um ingresso existente
+    @Override
+    public void editarIngresso(Long id, Ingresso ingresso) {
+        Ingresso ingressoExistente = buscarIngressoPorId(id);
+        ingressoExistente.setTipo(ingresso.getTipo());
+        ingressoExistente.setValorBase(ingresso.getValorBase());
+        ingressoExistente.setQuantidadeDisponivel(ingresso.getQuantidadeDisponivel());
+        ingressoExistente.setDescricao(ingresso.getDescricao());
+        ingressoRepository.save(ingressoExistente);
+    }
+
     // Lista todos os ingressos com paginação
     @Override
     public Page<Ingresso> listarTodosIngressos(Pageable pageable) {
@@ -67,5 +78,7 @@ public class IngressoServiceImpl implements IngressoService {
 
         return ingressos;
     }
+
+
     
 }

@@ -22,7 +22,9 @@ public record IngressoRequest(
     int quantidadeDisponivel,
 
     @NotNull(message = "O campo \"temMeiaEntrada\" é obrigatório.")
-    boolean temMeiaEntrada
+    boolean temMeiaEntrada,
+
+    String descricao
 
 ) {
     public Ingresso paraEntidade() {
@@ -32,6 +34,7 @@ public record IngressoRequest(
         ingresso.setValorBase(valorBase);
         ingresso.setQuantidadeDisponivel(quantidadeDisponivel);
         ingresso.setTemMeiaEntrada(temMeiaEntrada);
+        ingresso.setDescricao(descricao);
         
         return ingresso;
     }

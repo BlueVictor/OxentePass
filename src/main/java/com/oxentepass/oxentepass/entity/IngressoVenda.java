@@ -2,11 +2,12 @@ package com.oxentepass.oxentepass.entity;
 
 import java.math.BigDecimal;
 
-import com.oxentepass.oxentepass.exceptions.EstadoInvalidoException;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.Data;
 
@@ -20,11 +21,15 @@ public class IngressoVenda {
     @ManyToOne
     private Ingresso ingresso;
 
+    @ManyToOne
+    @JoinColumn(name = "venda_id")
+    @JsonIgnore
+    private Venda venda;
+
     private int quantidade;
     private boolean meiaEntrada;
     private BigDecimal valorTotal;
 
-    // Setters
     public void setQuantidade(int quantidade) {
 
         this.quantidade = quantidade;

@@ -3,6 +3,7 @@ package com.oxentepass.oxentepass.entity;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.oxentepass.oxentepass.exceptions.EstadoInvalidoException;
 
 import jakarta.persistence.Column;
@@ -32,6 +33,7 @@ public class Pagamento {
     private LocalDateTime dataPagamento;
 
     @OneToOne(mappedBy = "pagamento")
+    @JsonIgnore
     private Venda venda;
 
     // Mercado Pago

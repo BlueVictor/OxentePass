@@ -1,4 +1,5 @@
 package com.oxentepass.oxentepass.service.implementation;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +11,11 @@ import com.oxentepass.oxentepass.entity.Ingresso;
 import com.oxentepass.oxentepass.entity.IngressoVenda;
 import com.oxentepass.oxentepass.entity.MetodoPagamento;
 import com.oxentepass.oxentepass.entity.Pagamento;
+import com.oxentepass.oxentepass.entity.StatusVenda;
 import com.oxentepass.oxentepass.entity.Venda;
-import com.oxentepass.oxentepass.exceptions.EstadoInvalidoException;
 import com.oxentepass.oxentepass.exceptions.RecursoNaoEncontradoException;
-import com.oxentepass.oxentepass.repository.VendaRepository;
 import com.oxentepass.oxentepass.repository.IngressoRepository;
+import com.oxentepass.oxentepass.repository.VendaRepository;
 import com.oxentepass.oxentepass.service.VendaService;
 import com.querydsl.core.types.Predicate;
 
@@ -32,8 +33,33 @@ public class VendaServiceImpl implements VendaService {
 
     // Cria uma nova venda
     @Override
-    public void criarVenda(Venda venda){
-        vendaRepository.save(venda);
+    public Venda criarVenda(Venda venda) {
+
+        venda.setDataHoraVenda(LocalDateTime.now());
+        venda.setStatus(StatusVenda.ABERTA);
+
+        if (venda.getIngressos() != null && !venda.getIngressos().isEmpty()) {
+            for (IngressoVenda item : venda.getIngressos()) {
+                
+                Ingresso ingresso = ingressoRepository.findById(item.getIngresso().getId())
+                    .orElseThrow(() -> new RecursoNaoEncontradoException("Ingresso não encontrado no sistema"));
+
+                    ingresso.reduzirQuantidade(item.getQuantidade());
+                    ingressoRepository.save(ingresso);
+                
+                item.setIngresso(ingresso);
+                item.calcularValorTotal();
+            }
+        }
+
+        venda.calcularValorTotal();
+
+        if (venda.getPagamento() != null) {
+            venda.getPagamento().setValor(venda.getValorTotal());
+            venda.getPagamento().setVenda(venda); 
+        }
+
+        return vendaRepository.save(venda);
     }
 
     // Finaliza uma venda existente
