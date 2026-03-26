@@ -224,8 +224,17 @@ public class EventoServiceImpl implements EventoService {
         // É preciso remover as imagens do AWS S3 ao deletar o evento
         for (int i = 0; i < evento.getImagens().size(); i++) 
             imagemEventoService.removerImagem(evento, evento.getImagens().get(i));  
+
+        // Checagem para sub-eventos
+        if (eventoRepository.isSubevento(idEvento)) {
+            Evento eventoPai = eventoRepository.findEventoPaiBySubeventoId(idEvento).get();
+
+            ((EventoComposto)eventoPai).removerSubevento(evento);
+            eventoRepository.save(eventoPai);
+        }
         
         eventoRepository.delete(evento);
+
     }
 
     // Tags
